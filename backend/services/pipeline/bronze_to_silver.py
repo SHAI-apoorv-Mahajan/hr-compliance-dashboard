@@ -30,18 +30,21 @@ from models import (
     SilverLeaveTransaction,
 )
 
-
 log = logging.getLogger(__name__)
 
 
 HALF_PRESENT_TOKEN = "½Present"
 
 
-def run_bronze_to_silver(db: Session, period_start: date, period_end: date) -> dict[str, int]:
+def run_bronze_to_silver(
+    db: Session, period_start: date, period_end: date
+) -> dict[str, int]:
     counts: dict[str, int] = {"leave_transactions": 0, "daily_attendance": 0}
     log.info("silver: starting for %s..%s", period_start, period_end)
 
-    counts["leave_transactions"] = _rebuild_leave_transactions(db, period_start, period_end)
+    counts["leave_transactions"] = _rebuild_leave_transactions(
+        db, period_start, period_end
+    )
     counts["daily_attendance"] = _rebuild_daily_attendance(db, period_start, period_end)
 
     log.info("silver: done %s", counts)
@@ -50,7 +53,10 @@ def run_bronze_to_silver(db: Session, period_start: date, period_end: date) -> d
 
 # ---- leave_transactions ----------------------------------------------------
 
-def _rebuild_leave_transactions(db: Session, period_start: date, period_end: date) -> int:
+
+def _rebuild_leave_transactions(
+    db: Session, period_start: date, period_end: date
+) -> int:
     """Replace all silver_leave_transactions rows where the bronze upload's period
     matches the requested period. Idempotent."""
     relevant_uploads = (
@@ -79,7 +85,11 @@ def _rebuild_leave_transactions(db: Session, period_start: date, period_end: dat
     ).delete(synchronize_session=False)
 
     rows = 0
-    for raw in db.query(BronzeGreytHRRaw).filter(BronzeGreytHRRaw.upload_id.in_(upload_ids)).all():
+    for raw in (
+        db.query(BronzeGreytHRRaw)
+        .filter(BronzeGreytHRRaw.upload_id.in_(upload_ids))
+        .all()
+    ):
         db.add(
             SilverLeaveTransaction(
                 upload_id=raw.upload_id,
@@ -107,6 +117,7 @@ def _rebuild_leave_transactions(db: Session, period_start: date, period_end: dat
 
 # ---- daily_attendance ------------------------------------------------------
 
+
 def _backfill_emp_codes(db: Session, upload_ids: list) -> None:
     """Populate silver_employees.emp_code from biometric data via normalized name match.
 
@@ -116,9 +127,7 @@ def _backfill_emp_codes(db: Session, upload_ids: list) -> None:
     Only writes to rows where emp_code is currently NULL to stay idempotent.
     """
     employees_without_code = (
-        db.query(SilverEmployee)
-        .filter(SilverEmployee.emp_code.is_(None))
-        .all()
+        db.query(SilverEmployee).filter(SilverEmployee.emp_code.is_(None)).all()
     )
     if not employees_without_code:
         return
@@ -146,7 +155,9 @@ def _backfill_emp_codes(db: Session, upload_ids: list) -> None:
 
     if updated:
         db.flush()
-        log.info("silver: backfilled emp_code for %d employees from biometric names", updated)
+        log.info(
+            "silver: backfilled emp_code for %d employees from biometric names", updated
+        )
 
 
 def _rebuild_daily_attendance(db: Session, period_start: date, period_end: date) -> int:
@@ -208,7 +219,9 @@ def _rebuild_daily_attendance(db: Session, period_start: date, period_end: date)
 
     rows = 0
     for raw in (
-        db.query(BronzeBiometricRaw).filter(BronzeBiometricRaw.upload_id.in_(upload_ids)).all()
+        db.query(BronzeBiometricRaw)
+        .filter(BronzeBiometricRaw.upload_id.in_(upload_ids))
+        .all()
     ):
         status = (raw.status or "").strip()
         is_half_present = HALF_PRESENT_TOKEN in status

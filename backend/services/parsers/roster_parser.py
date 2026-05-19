@@ -23,7 +23,6 @@ from sqlalchemy.orm import Session
 from models import BronzeRosterRaw, SilverEmployee
 from utils.date_utils import parse_time_string
 
-
 log = logging.getLogger(__name__)
 
 
@@ -55,11 +54,15 @@ def normalize_name(name: str | None) -> str | None:
     return " ".join(str(name).split()).strip()
 
 
-def parse_roster_and_upsert_employees(db: Session, upload_id: UUID, content: bytes) -> int:
+def parse_roster_and_upsert_employees(
+    db: Session, upload_id: UUID, content: bytes
+) -> int:
     try:
         df = pd.read_excel(io.BytesIO(content), sheet_name=0, dtype=object)
     except Exception as exc:
-        raise HTTPException(status_code=422, detail=f"Cannot read roster Excel: {exc}") from exc
+        raise HTTPException(
+            status_code=422, detail=f"Cannot read roster Excel: {exc}"
+        ) from exc
 
     missing = [c for c in REQUIRED_COLUMNS if c not in df.columns]
     if missing:

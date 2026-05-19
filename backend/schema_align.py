@@ -16,7 +16,6 @@ import logging
 from sqlalchemy import text
 from sqlalchemy.engine import Engine
 
-
 log = logging.getLogger(__name__)
 
 

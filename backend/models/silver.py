@@ -8,7 +8,15 @@ from datetime import date, datetime, time
 from decimal import Decimal
 from typing import Optional
 
-from sqlalchemy import Boolean, ForeignKey, Numeric, String, Text, Time, UniqueConstraint
+from sqlalchemy import (
+    Boolean,
+    ForeignKey,
+    Numeric,
+    String,
+    Text,
+    Time,
+    UniqueConstraint,
+)
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql import func
 
@@ -19,7 +27,9 @@ from models._types import UUIDType
 class SilverEmployee(Base):
     __tablename__ = "silver_employees"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUIDType(), primary_key=True, default=uuid.uuid4)
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUIDType(), primary_key=True, default=uuid.uuid4
+    )
     emp_code: Mapped[Optional[str]] = mapped_column(String(40), unique=True)
     name: Mapped[str] = mapped_column(Text, nullable=False)
     email: Mapped[Optional[str]] = mapped_column(String(255))
@@ -53,7 +63,9 @@ class SilverEmployee(Base):
 class SilverLeaveTransaction(Base):
     __tablename__ = "silver_leave_transactions"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUIDType(), primary_key=True, default=uuid.uuid4)
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUIDType(), primary_key=True, default=uuid.uuid4
+    )
     upload_id: Mapped[uuid.UUID] = mapped_column(
         UUIDType(), ForeignKey("bronze_uploads.id", ondelete="CASCADE")
     )
@@ -78,10 +90,14 @@ class SilverLeaveTransaction(Base):
 class SilverDailyAttendance(Base):
     __tablename__ = "silver_daily_attendance"
     __table_args__ = (
-        UniqueConstraint("emp_code", "att_date", "upload_id", name="uq_silver_emp_date_upload"),
+        UniqueConstraint(
+            "emp_code", "att_date", "upload_id", name="uq_silver_emp_date_upload"
+        ),
     )
 
-    id: Mapped[uuid.UUID] = mapped_column(UUIDType(), primary_key=True, default=uuid.uuid4)
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUIDType(), primary_key=True, default=uuid.uuid4
+    )
     upload_id: Mapped[uuid.UUID] = mapped_column(
         UUIDType(), ForeignKey("bronze_uploads.id", ondelete="CASCADE")
     )

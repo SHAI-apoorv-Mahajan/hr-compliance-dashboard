@@ -10,13 +10,23 @@ from tests.fixtures import build_biometric_xlsx
 
 
 def _make_upload(db):
-    u = BronzeUpload(file_type="biometric", original_filename="b.xlsx", status="processing")
+    u = BronzeUpload(
+        file_type="biometric", original_filename="b.xlsx", status="processing"
+    )
     db.add(u)
     db.flush()
     return u
 
 
-def _day(d, status="Present", late_by="00:00", early_by="00:00", in_time="10:00", out_time="19:00", work="09:00"):
+def _day(
+    d,
+    status="Present",
+    late_by="00:00",
+    early_by="00:00",
+    in_time="10:00",
+    out_time="19:00",
+    work="09:00",
+):
     return {
         "att_date": d,
         "in_time": in_time,

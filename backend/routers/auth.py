@@ -11,7 +11,6 @@ from routers.deps import get_current_user
 from schemas.auth import LoginRequest, TokenResponse, UserResponse
 from utils.auth_utils import create_access_token, verify_password
 
-
 router = APIRouter(prefix="/api/v1/auth", tags=["auth"])
 
 
@@ -19,7 +18,11 @@ router = APIRouter(prefix="/api/v1/auth", tags=["auth"])
 def login(payload: LoginRequest, db: Session = Depends(get_db)) -> TokenResponse:
     user = db.query(AppUser).filter(AppUser.email == payload.email).first()
     # Same response shape whether email missing or password wrong (FR-001 verbatim).
-    if not user or not user.is_active or not verify_password(payload.password, user.password_hash):
+    if (
+        not user
+        or not user.is_active
+        or not verify_password(payload.password, user.password_hash)
+    ):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password"
         )

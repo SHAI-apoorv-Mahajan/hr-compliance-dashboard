@@ -11,7 +11,6 @@ from sqlalchemy.orm import Session
 from models import AppEmailTemplate, AppFlagThreshold, AppUser
 from utils.auth_utils import hash_password
 
-
 log = logging.getLogger(__name__)
 
 
@@ -155,13 +154,38 @@ _TEMPLATES = [
 
 _THRESHOLDS = [
     ("LATE_ARRIVAL", Decimal("3"), "count", "Late arrivals per period exceeding N"),
-    ("EARLY_DEPARTURE", Decimal("3"), "count", "Early departures per period exceeding N"),
-    ("ABSENT_WITHOUT_LEAVE", Decimal("2"), "days", "Absent without leave exceeding N days"),
-    ("CONSECUTIVE_ABSENCE", Decimal("2"), "days", "Consecutive absent-without-leave days"),
+    (
+        "EARLY_DEPARTURE",
+        Decimal("3"),
+        "count",
+        "Early departures per period exceeding N",
+    ),
+    (
+        "ABSENT_WITHOUT_LEAVE",
+        Decimal("2"),
+        "days",
+        "Absent without leave exceeding N days",
+    ),
+    (
+        "CONSECUTIVE_ABSENCE",
+        Decimal("2"),
+        "days",
+        "Consecutive absent-without-leave days",
+    ),
     ("NO_OUT_PUNCH", Decimal("3"), "count", "No clock-out occurrences exceeding N"),
     ("HALF_DAY_FREQUENCY", Decimal("4"), "count", "Half-day occurrences exceeding N"),
-    ("WFH_QUOTA_EXCEEDED", Decimal("0"), "days", "WFH availed > monthly credit (any excess)"),
-    ("LOW_WORK_HOURS", Decimal("300"), "minutes", "Work duration on present day < N minutes"),
+    (
+        "WFH_QUOTA_EXCEEDED",
+        Decimal("0"),
+        "days",
+        "WFH availed > monthly credit (any excess)",
+    ),
+    (
+        "LOW_WORK_HOURS",
+        Decimal("300"),
+        "minutes",
+        "Work duration on present day < N minutes",
+    ),
     ("WFO_VIOLATION", Decimal("1"), "count", "Scheduled WFO day, absent without leave"),
 ]
 

@@ -16,10 +16,14 @@ from models._types import JSONBType, UUIDType
 class GoldPeriodStat(Base):
     __tablename__ = "gold_period_stats"
     __table_args__ = (
-        UniqueConstraint("emp_code", "period_start", "period_end", name="uq_gold_period"),
+        UniqueConstraint(
+            "emp_code", "period_start", "period_end", name="uq_gold_period"
+        ),
     )
 
-    id: Mapped[uuid.UUID] = mapped_column(UUIDType(), primary_key=True, default=uuid.uuid4)
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUIDType(), primary_key=True, default=uuid.uuid4
+    )
     emp_code: Mapped[Optional[str]] = mapped_column(String(20))
     period_start: Mapped[Optional[date]] = mapped_column()
     period_end: Mapped[Optional[date]] = mapped_column()
@@ -45,7 +49,9 @@ class GoldEmployeeFlag(Base):
         UniqueConstraint("emp_code", "flag_type", "period_start", name="uq_gold_flag"),
     )
 
-    id: Mapped[uuid.UUID] = mapped_column(UUIDType(), primary_key=True, default=uuid.uuid4)
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUIDType(), primary_key=True, default=uuid.uuid4
+    )
     emp_code: Mapped[Optional[str]] = mapped_column(String(20))
     employee_name: Mapped[Optional[str]] = mapped_column(String(150))
     period_start: Mapped[Optional[date]] = mapped_column()

@@ -22,7 +22,6 @@ from models import (
 )
 from services.pipeline._upsert import upsert
 
-
 log = logging.getLogger(__name__)
 
 
@@ -53,7 +52,9 @@ def run_silver_to_gold_stats(db: Session, period_start: date, period_end: date) 
         by_emp[r.emp_code].append(r)
 
     # Leave-summary per emp.
-    leave_by_emp: dict[str, dict[str, Decimal]] = defaultdict(lambda: defaultdict(lambda: Decimal("0")))
+    leave_by_emp: dict[str, dict[str, Decimal]] = defaultdict(
+        lambda: defaultdict(lambda: Decimal("0"))
+    )
     wfh_availed: dict[str, Decimal] = defaultdict(lambda: Decimal("0"))
     leave_rows = (
         db.query(SilverLeaveTransaction)
@@ -83,7 +84,9 @@ def run_silver_to_gold_stats(db: Session, period_start: date, period_end: date) 
         total_minutes = 0
         working_days = 0
 
-        meta = emp_meta.get(emp_code, {"wfh_credits_monthly": 0, "is_permanent_wfh": False})
+        meta = emp_meta.get(
+            emp_code, {"wfh_credits_monthly": 0, "is_permanent_wfh": False}
+        )
 
         for r in att_rows:
             if r.is_weekly_off:
@@ -100,9 +103,19 @@ def run_silver_to_gold_stats(db: Session, period_start: date, period_end: date) 
             else:
                 present_days += Decimal("1")
 
-            if r.late_by_minutes and r.late_by_minutes > 0 and r.status and "Present" in r.status:
+            if (
+                r.late_by_minutes
+                and r.late_by_minutes > 0
+                and r.status
+                and "Present" in r.status
+            ):
                 late_count += 1
-            if r.early_going_by_minutes and r.early_going_by_minutes > 0 and r.status and "Present" in r.status:
+            if (
+                r.early_going_by_minutes
+                and r.early_going_by_minutes > 0
+                and r.status
+                and "Present" in r.status
+            ):
                 early_count += 1
             if r.is_no_out_punch:
                 no_out_count += 1

@@ -23,7 +23,6 @@ from services.flag_engine import run_flag_engine
 from services.pipeline.bronze_to_silver import run_bronze_to_silver
 from services.pipeline.silver_to_gold import run_silver_to_gold_stats
 
-
 log = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/pipeline", tags=["pipeline"])
 
@@ -35,10 +34,14 @@ def run_pipeline(
     _user: AppUser = Depends(get_current_user),
 ) -> PipelineRunResult:
     if payload.period_start > payload.period_end:
-        raise HTTPException(status_code=422, detail="period_start must be <= period_end")
+        raise HTTPException(
+            status_code=422, detail="period_start must be <= period_end"
+        )
 
     has_greythr = _has_upload(db, "greythr", payload.period_start, payload.period_end)
-    has_biometric = _has_upload(db, "biometric", payload.period_start, payload.period_end)
+    has_biometric = _has_upload(
+        db, "biometric", payload.period_start, payload.period_end
+    )
     if not has_greythr or not has_biometric:
         missing = []
         if not has_biometric:
@@ -51,8 +54,12 @@ def run_pipeline(
         )
 
     try:
-        silver_counts = run_bronze_to_silver(db, payload.period_start, payload.period_end)
-        stats_count = run_silver_to_gold_stats(db, payload.period_start, payload.period_end)
+        silver_counts = run_bronze_to_silver(
+            db, payload.period_start, payload.period_end
+        )
+        stats_count = run_silver_to_gold_stats(
+            db, payload.period_start, payload.period_end
+        )
         flag_counts = run_flag_engine(db, payload.period_start, payload.period_end)
         db.commit()
     except Exception as exc:
@@ -109,7 +116,9 @@ def pipeline_status(
     )
 
 
-def _has_upload(db: Session, file_type: str, period_start: date, period_end: date) -> bool:
+def _has_upload(
+    db: Session, file_type: str, period_start: date, period_end: date
+) -> bool:
     return (
         db.query(BronzeUpload)
         .filter(

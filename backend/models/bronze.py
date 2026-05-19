@@ -21,7 +21,9 @@ from models._types import UUIDType
 class BronzeUpload(Base):
     __tablename__ = "bronze_uploads"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUIDType(), primary_key=True, default=uuid.uuid4)
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUIDType(), primary_key=True, default=uuid.uuid4
+    )
     file_type: Mapped[str] = mapped_column(String(20), nullable=False)
     original_filename: Mapped[Optional[str]] = mapped_column(Text)
     period_start: Mapped[Optional[date]] = mapped_column()
@@ -35,7 +37,9 @@ class BronzeUpload(Base):
 class BronzeGreytHRRaw(Base):
     __tablename__ = "bronze_greythr_raw"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUIDType(), primary_key=True, default=uuid.uuid4)
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUIDType(), primary_key=True, default=uuid.uuid4
+    )
     upload_id: Mapped[uuid.UUID] = mapped_column(
         UUIDType(), ForeignKey("bronze_uploads.id", ondelete="CASCADE")
     )
@@ -59,7 +63,9 @@ class BronzeGreytHRRaw(Base):
 class BronzeBiometricRaw(Base):
     __tablename__ = "bronze_biometric_raw"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUIDType(), primary_key=True, default=uuid.uuid4)
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUIDType(), primary_key=True, default=uuid.uuid4
+    )
     upload_id: Mapped[uuid.UUID] = mapped_column(
         UUIDType(), ForeignKey("bronze_uploads.id", ondelete="CASCADE")
     )
@@ -84,7 +90,9 @@ class BronzeBiometricRaw(Base):
 class BronzeRosterRaw(Base):
     __tablename__ = "bronze_roster_raw"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUIDType(), primary_key=True, default=uuid.uuid4)
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUIDType(), primary_key=True, default=uuid.uuid4
+    )
     upload_id: Mapped[uuid.UUID] = mapped_column(
         UUIDType(), ForeignKey("bronze_uploads.id", ondelete="CASCADE")
     )

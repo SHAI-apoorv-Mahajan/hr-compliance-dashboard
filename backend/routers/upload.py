@@ -31,7 +31,6 @@ from services.parsers.biometric_parser import parse_biometric
 from services.parsers.greythr_parser import parse_greythr
 from services.parsers.roster_parser import parse_roster_and_upsert_employees
 
-
 log = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/upload", tags=["upload"])
 
@@ -42,7 +41,9 @@ def _require_xlsx(file: UploadFile) -> None:
         raise HTTPException(status_code=422, detail="Only .xlsx files are accepted")
 
 
-def _reject_overlap(db: Session, file_type: str, period_start: date, period_end: date) -> None:
+def _reject_overlap(
+    db: Session, file_type: str, period_start: date, period_end: date
+) -> None:
     """FR-005: reject if any existing processed upload of this file_type overlaps the period."""
     overlap = (
         db.query(BronzeUpload)
@@ -140,7 +141,9 @@ async def upload_greythr(
     except Exception as exc:
         _mark_failed(db, upload.id, str(exc))
         log.exception("greythr upload failed")
-        raise HTTPException(status_code=422, detail=f"Failed to parse GreytHR file: {exc}") from exc
+        raise HTTPException(
+            status_code=422, detail=f"Failed to parse GreytHR file: {exc}"
+        ) from exc
     return UploadResponse.model_validate(upload, from_attributes=True)
 
 
@@ -208,7 +211,9 @@ async def upload_roster(
     except Exception as exc:
         _mark_failed(db, upload.id, str(exc))
         log.exception("roster upload failed")
-        raise HTTPException(status_code=422, detail=f"Failed to parse roster file: {exc}") from exc
+        raise HTTPException(
+            status_code=422, detail=f"Failed to parse roster file: {exc}"
+        ) from exc
     return UploadResponse.model_validate(upload, from_attributes=True)
 
 

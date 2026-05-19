@@ -36,11 +36,11 @@ from services.email_service import (
     render,
 )
 
-
 router = APIRouter(prefix="/api/v1/email", tags=["email"])
 
 
 # ---- config-status (FR-014, US-017) ---------------------------------------
+
 
 @router.get("/config-status", response_model=ConfigStatus)
 def config_status(_user: AppUser = Depends(get_current_user)) -> ConfigStatus:
@@ -56,6 +56,7 @@ def config_status(_user: AppUser = Depends(get_current_user)) -> ConfigStatus:
 
 
 # ---- templates CRUD (FR-015, US-018) --------------------------------------
+
 
 @router.get("/templates", response_model=list[TemplateOut])
 def list_templates(
@@ -127,7 +128,9 @@ def delete_template(
     if not t:
         raise HTTPException(status_code=404, detail="Template not found")
     # If referenced in app_email_log, soft-delete; otherwise hard-delete (FR-015).
-    referenced = db.query(AppEmailLog).filter(AppEmailLog.template_id == template_id).first()
+    referenced = (
+        db.query(AppEmailLog).filter(AppEmailLog.template_id == template_id).first()
+    )
     if referenced:
         t.is_active = False
         db.commit()
@@ -138,6 +141,7 @@ def delete_template(
 
 
 # ---- send (FR-013/14, US-016) ---------------------------------------------
+
 
 @router.post("/send", response_model=list[SendResult] | list[RenderedEmail])
 def send(
@@ -150,7 +154,9 @@ def send(
         raise HTTPException(status_code=404, detail="Template not found")
 
     flags = (
-        db.query(GoldEmployeeFlag).filter(GoldEmployeeFlag.id.in_(payload.flag_ids)).all()
+        db.query(GoldEmployeeFlag)
+        .filter(GoldEmployeeFlag.id.in_(payload.flag_ids))
+        .all()
     )
     if not flags:
         raise HTTPException(status_code=404, detail="No flags found for given flag_ids")
@@ -238,6 +244,7 @@ def send(
 
 # ---- email logs (FR-019, US-020) ------------------------------------------
 
+
 @router.get("/logs", response_model=list[EmailLogOut])
 def list_logs(
     emp_code: str | None = Query(default=None),
@@ -251,7 +258,9 @@ def list_logs(
         q = q.filter(AppEmailLog.emp_code == emp_code)
     if period_start and period_end:
         # period filter joins via flag
-        q = q.join(GoldEmployeeFlag, AppEmailLog.flag_id == GoldEmployeeFlag.id, isouter=True).filter(
+        q = q.join(
+            GoldEmployeeFlag, AppEmailLog.flag_id == GoldEmployeeFlag.id, isouter=True
+        ).filter(
             GoldEmployeeFlag.period_start == period_start,
             GoldEmployeeFlag.period_end == period_end,
         )

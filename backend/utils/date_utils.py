@@ -3,7 +3,6 @@
 import re
 from datetime import date, datetime, timedelta, time
 
-
 EXCEL_EPOCH = datetime(1899, 12, 30)
 
 

@@ -12,7 +12,6 @@ from routers.deps import get_current_user
 from schemas.flags import FlagOut, RecomputeRequest
 from services.flag_engine import run_flag_engine
 
-
 router = APIRouter(prefix="/api/v1/flags", tags=["flags"])
 
 

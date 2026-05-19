@@ -8,7 +8,6 @@ from models import AppUser, SilverEmployee
 from routers.deps import get_current_user
 from schemas.employees import EmailUpdate, EmployeeOut
 
-
 router = APIRouter(prefix="/api/v1/employees", tags=["employees"])
 
 

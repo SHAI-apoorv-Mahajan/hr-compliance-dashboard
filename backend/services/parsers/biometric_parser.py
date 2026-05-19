@@ -26,7 +26,6 @@ from sqlalchemy.orm import Session
 from models import BronzeBiometricRaw
 from utils.date_utils import hhmm_to_minutes
 
-
 log = logging.getLogger(__name__)
 
 
@@ -38,11 +37,15 @@ def parse_biometric(db: Session, upload_id: UUID, content: bytes) -> int:
     try:
         wb = openpyxl.load_workbook(io.BytesIO(content), read_only=True, data_only=True)
     except Exception as exc:
-        raise HTTPException(status_code=422, detail=f"Cannot read biometric Excel: {exc}") from exc
+        raise HTTPException(
+            status_code=422, detail=f"Cannot read biometric Excel: {exc}"
+        ) from exc
 
     ws = wb.active
     if ws is None:
-        raise HTTPException(status_code=422, detail="Biometric Excel has no active sheet")
+        raise HTTPException(
+            status_code=422, detail="Biometric Excel has no active sheet"
+        )
 
     rows = 0
     for record in _iter_records(ws):
@@ -81,7 +84,9 @@ def _iter_records(ws) -> Iterator[dict]:
             # Real files have "Employee Name :" label at col 4 and the actual
             # name at col 5+. Skip the label token itself when picking the name.
             name_parts = [
-                c for c in cells[4:] if c and c.lower().rstrip(":").strip() != "employee name"
+                c
+                for c in cells[4:]
+                if c and c.lower().rstrip(":").strip() != "employee name"
             ]
             current_emp_name = name_parts[0] if name_parts else None
             skip_next_row = True
@@ -99,7 +104,10 @@ def _iter_records(ws) -> Iterator[dict]:
 
         if not current_emp_code:
             continue
-        if not cells[1] or cells[1] == "Daily Attendance Report (Detailed Summary Report)":
+        if (
+            not cells[1]
+            or cells[1] == "Daily Attendance Report (Detailed Summary Report)"
+        ):
             continue
 
         # DATA ROW — cells[1] is a date string like "01-Apr-2026".

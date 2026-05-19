@@ -18,7 +18,6 @@ from sqlalchemy.orm import Session
 from config import get_settings
 from models import AppEmailLog, AppEmailTemplate, GoldEmployeeFlag, SilverEmployee
 
-
 log = logging.getLogger(__name__)
 
 
@@ -39,14 +38,18 @@ def assert_graph_configured() -> None:
         )
 
 
-def render(template_subject: str, template_body: str, vars: dict[str, str]) -> tuple[str, str]:
+def render(
+    template_subject: str, template_body: str, vars: dict[str, str]
+) -> tuple[str, str]:
     def sub(s: str) -> str:
         return _VAR_RE.sub(lambda m: str(vars.get(m.group(1), m.group(0))), s)
 
     return sub(template_subject), sub(template_body)
 
 
-def build_vars_for_flag(flag: GoldEmployeeFlag, emp: SilverEmployee | None) -> dict[str, str]:
+def build_vars_for_flag(
+    flag: GoldEmployeeFlag, emp: SilverEmployee | None
+) -> dict[str, str]:
     dates: list[str] = []
     details = flag.flag_details or {}
     if isinstance(details, dict) and isinstance(details.get("dates"), list):
@@ -63,7 +66,9 @@ def build_vars_for_flag(flag: GoldEmployeeFlag, emp: SilverEmployee | None) -> d
         "period_end": flag.period_end.isoformat() if flag.period_end else "",
         "flag_count": str(int(flag.flag_value) if flag.flag_value is not None else ""),
         "flag_dates": ", ".join(dates),
-        "threshold": str(int(flag.threshold_value) if flag.threshold_value is not None else ""),
+        "threshold": str(
+            int(flag.threshold_value) if flag.threshold_value is not None else ""
+        ),
         "sender_name": SENDER_NAME,
     }
 
@@ -80,12 +85,20 @@ def fetch_graph_token() -> str:
     with httpx.Client(timeout=20.0) as client:
         resp = client.post(url, data=data)
     if resp.status_code != 200:
-        log.error("graph token fetch failed: status=%s body=%s", resp.status_code, resp.text[:500])
-        raise HTTPException(status_code=502, detail="Could not obtain Microsoft Graph access token")
+        log.error(
+            "graph token fetch failed: status=%s body=%s",
+            resp.status_code,
+            resp.text[:500],
+        )
+        raise HTTPException(
+            status_code=502, detail="Could not obtain Microsoft Graph access token"
+        )
     return resp.json()["access_token"]
 
 
-def graph_send(token: str, recipient: str, subject: str, body: str) -> tuple[bool, str | None]:
+def graph_send(
+    token: str, recipient: str, subject: str, body: str
+) -> tuple[bool, str | None]:
     s = get_settings()
     url = f"https://graph.microsoft.com/v1.0/users/{s.GRAPH_SENDER_EMAIL}/sendMail"
     payload = {
@@ -101,7 +114,9 @@ def graph_send(token: str, recipient: str, subject: str, body: str) -> tuple[boo
         resp = client.post(url, json=payload, headers=headers)
     if 200 <= resp.status_code < 300:
         return True, None
-    log.error("graph sendMail failed: status=%s body=%s", resp.status_code, resp.text[:800])
+    log.error(
+        "graph sendMail failed: status=%s body=%s", resp.status_code, resp.text[:800]
+    )
     return False, f"HTTP {resp.status_code}: {resp.text[:500]}"
 
 

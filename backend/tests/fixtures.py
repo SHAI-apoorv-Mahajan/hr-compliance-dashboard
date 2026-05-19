@@ -6,8 +6,8 @@ import io
 from datetime import date, datetime
 from openpyxl import Workbook
 
-
 # ---- GreytHR ---------------------------------------------------------------
+
 
 def build_greythr_xlsx(rows: list[dict]) -> bytes:
     wb = Workbook()
@@ -43,6 +43,7 @@ def date_to_excel_serial(d: date) -> int:
 
 
 # ---- Biometric (block format per PRD §14.2) --------------------------------
+
 
 def build_biometric_xlsx(blocks: list[dict]) -> bytes:
     """Build the report-style block format.

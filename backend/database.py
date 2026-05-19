@@ -9,7 +9,6 @@ from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
 from config import get_settings
 
-
 _settings = get_settings()
 
 engine = create_engine(
@@ -19,7 +18,9 @@ engine = create_engine(
 )
 
 
-SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, expire_on_commit=False)
+SessionLocal = sessionmaker(
+    bind=engine, autoflush=False, autocommit=False, expire_on_commit=False
+)
 
 
 class Base(DeclarativeBase):

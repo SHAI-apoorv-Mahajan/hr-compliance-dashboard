@@ -20,7 +20,6 @@ from sqlalchemy.orm import Session
 from models import BronzeGreytHRRaw
 from utils.date_utils import excel_serial_to_date
 
-
 log = logging.getLogger(__name__)
 
 
@@ -56,7 +55,9 @@ def parse_greythr(
     try:
         df = pd.read_excel(io.BytesIO(content), sheet_name=0, dtype=object)
     except Exception as exc:
-        raise HTTPException(status_code=422, detail=f"Cannot read GreytHR Excel: {exc}") from exc
+        raise HTTPException(
+            status_code=422, detail=f"Cannot read GreytHR Excel: {exc}"
+        ) from exc
 
     missing = [c for c in REQUIRED_COLUMNS if c not in df.columns]
     if missing:
@@ -78,7 +79,11 @@ def parse_greythr(
                 if posted_raw not in (None, "")
                 else None
             )
-            posted_dt = posted_dt.to_pydatetime() if posted_dt is not pd.NaT and posted_dt is not None else None
+            posted_dt = (
+                posted_dt.to_pydatetime()
+                if posted_dt is not pd.NaT and posted_dt is not None
+                else None
+            )
         except Exception:
             posted_dt = None
 

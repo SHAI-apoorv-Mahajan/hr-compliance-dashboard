@@ -27,7 +27,6 @@ from models import (
 )
 from services.pipeline._upsert import upsert
 
-
 log = logging.getLogger(__name__)
 
 
@@ -44,12 +43,16 @@ FLAG_TYPES = [
 ]
 
 
-def run_flag_engine(db: Session, period_start: date, period_end: date) -> dict[str, int]:
+def run_flag_engine(
+    db: Session, period_start: date, period_end: date
+) -> dict[str, int]:
     log.info("flags: starting for %s..%s", period_start, period_end)
 
     thresholds = {
         t.flag_type: t.threshold_value
-        for t in db.query(AppFlagThreshold).filter(AppFlagThreshold.is_active.is_(True)).all()
+        for t in db.query(AppFlagThreshold)
+        .filter(AppFlagThreshold.is_active.is_(True))
+        .all()
     }
 
     employees = {e.emp_code: e for e in db.query(SilverEmployee).all() if e.emp_code}
@@ -128,6 +131,7 @@ def run_flag_engine(db: Session, period_start: date, period_end: date) -> dict[s
 
 # ---- per-flag evaluation ---------------------------------------------------
 
+
 def _evaluate(
     flag_type: str,
     emp: SilverEmployee | None,
@@ -147,10 +151,17 @@ def _evaluate(
         dates = [
             r.att_date.isoformat()
             for r in att_rows
-            if r.late_by_minutes and r.late_by_minutes > 0 and r.status and "Present" in r.status
+            if r.late_by_minutes
+            and r.late_by_minutes > 0
+            and r.status
+            and "Present" in r.status
         ]
         n = len(dates)
-        return (Decimal(n), threshold, {"dates": dates}) if Decimal(n) > threshold else None
+        return (
+            (Decimal(n), threshold, {"dates": dates})
+            if Decimal(n) > threshold
+            else None
+        )
 
     if flag_type == "EARLY_DEPARTURE":
         dates = [
@@ -162,7 +173,11 @@ def _evaluate(
             and "Present" in r.status
         ]
         n = len(dates)
-        return (Decimal(n), threshold, {"dates": dates}) if Decimal(n) > threshold else None
+        return (
+            (Decimal(n), threshold, {"dates": dates})
+            if Decimal(n) > threshold
+            else None
+        )
 
     if flag_type == "ABSENT_WITHOUT_LEAVE":
         if is_pwfh:
@@ -173,7 +188,11 @@ def _evaluate(
             if r.is_absent and not r.is_weekly_off and not r.has_approved_leave
         ]
         n = len(dates)
-        return (Decimal(n), threshold, {"dates": dates}) if Decimal(n) > threshold else None
+        return (
+            (Decimal(n), threshold, {"dates": dates})
+            if Decimal(n) > threshold
+            else None
+        )
 
     if flag_type == "CONSECUTIVE_ABSENCE":
         if is_pwfh:
@@ -206,12 +225,20 @@ def _evaluate(
     if flag_type == "NO_OUT_PUNCH":
         dates = [r.att_date.isoformat() for r in att_rows if r.is_no_out_punch]
         n = len(dates)
-        return (Decimal(n), threshold, {"dates": dates}) if Decimal(n) > threshold else None
+        return (
+            (Decimal(n), threshold, {"dates": dates})
+            if Decimal(n) > threshold
+            else None
+        )
 
     if flag_type == "HALF_DAY_FREQUENCY":
         dates = [r.att_date.isoformat() for r in att_rows if r.is_half_present]
         n = len(dates)
-        return (Decimal(n), threshold, {"dates": dates}) if Decimal(n) > threshold else None
+        return (
+            (Decimal(n), threshold, {"dates": dates})
+            if Decimal(n) > threshold
+            else None
+        )
 
     if flag_type == "WFH_QUOTA_EXCEEDED":
         credits = Decimal(emp.wfh_credits_monthly if emp else 0)
@@ -219,7 +246,11 @@ def _evaluate(
         # default threshold value is 0 = any excess). flag_value = excess days.
         excess = wfh_availed - credits
         if excess > threshold:
-            return (excess, credits, {"availed": float(wfh_availed), "credits": float(credits)})
+            return (
+                excess,
+                credits,
+                {"availed": float(wfh_availed), "credits": float(credits)},
+            )
         return None
 
     if flag_type == "LOW_WORK_HOURS":
@@ -261,7 +292,11 @@ def _evaluate(
                 if (getattr(emp, attr) or "").strip().upper() == "WFO":
                     dates.append(r.att_date.isoformat())
         n = len(dates)
-        return (Decimal(n), threshold, {"dates": dates}) if Decimal(n) >= threshold and n > 0 else None
+        return (
+            (Decimal(n), threshold, {"dates": dates})
+            if Decimal(n) >= threshold and n > 0
+            else None
+        )
 
     return None
 
@@ -316,7 +351,10 @@ def _deactivate_stale(
     """Flags from a prior run that no longer apply this run → is_active = False."""
     existing = (
         db.query(GoldEmployeeFlag)
-        .filter(GoldEmployeeFlag.period_start == period_start, GoldEmployeeFlag.is_active.is_(True))
+        .filter(
+            GoldEmployeeFlag.period_start == period_start,
+            GoldEmployeeFlag.is_active.is_(True),
+        )
         .all()
     )
     for f in existing:

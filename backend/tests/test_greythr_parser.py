@@ -10,7 +10,9 @@ from tests.fixtures import build_greythr_xlsx, date_to_excel_serial
 
 
 def _make_upload(db) -> BronzeUpload:
-    u = BronzeUpload(file_type="greythr", original_filename="g.xlsx", status="processing")
+    u = BronzeUpload(
+        file_type="greythr", original_filename="g.xlsx", status="processing"
+    )
     db.add(u)
     db.flush()
     return u
@@ -80,7 +82,9 @@ def test_missing_column_raises_422(db):
     from fastapi import HTTPException
 
     with pytest.raises(HTTPException) as exc:
-        parse_greythr(db, upload.id, buf.getvalue(), date(2026, 4, 1), date(2026, 4, 30))
+        parse_greythr(
+            db, upload.id, buf.getvalue(), date(2026, 4, 1), date(2026, 4, 30)
+        )
     assert exc.value.status_code == 422
     assert "missing required columns" in exc.value.detail
 

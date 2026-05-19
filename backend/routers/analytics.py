@@ -17,7 +17,6 @@ from models import (
 from routers.deps import get_current_user
 from schemas.analytics import AttendanceBar, FlagSlice, LateTrendPoint, OverviewMetrics
 
-
 router = APIRouter(prefix="/api/v1/analytics", tags=["analytics"])
 
 
@@ -53,12 +52,16 @@ def overview(
     if stats:
         present_total = sum(float(s.present_days or 0) for s in stats)
         working_total = sum(s.total_working_days or 0 for s in stats)
-        attendance_rate = (present_total / working_total * 100.0) if working_total else 0.0
+        attendance_rate = (
+            (present_total / working_total * 100.0) if working_total else 0.0
+        )
 
         wfh_emps = [s for s in stats if (s.wfh_credits_allocated or 0) > 0]
         if wfh_emps:
             compliant = sum(
-                1 for s in wfh_emps if (s.wfh_days_availed or 0) <= (s.wfh_credits_allocated or 0)
+                1
+                for s in wfh_emps
+                if (s.wfh_days_availed or 0) <= (s.wfh_credits_allocated or 0)
             )
             wfh_compliance = compliant / len(wfh_emps) * 100.0
         else:
@@ -69,7 +72,9 @@ def overview(
 
     emails_sent = (
         db.query(AppEmailLog)
-        .join(GoldEmployeeFlag, AppEmailLog.flag_id == GoldEmployeeFlag.id, isouter=True)
+        .join(
+            GoldEmployeeFlag, AppEmailLog.flag_id == GoldEmployeeFlag.id, isouter=True
+        )
         .filter(
             AppEmailLog.status == "sent",
             GoldEmployeeFlag.period_start == period_start,
@@ -159,6 +164,8 @@ def late_trend(
     )
     rows.reverse()
     return [
-        LateTrendPoint(period_start=ps, period_end=pe, late_arrival_total=int(total or 0))
+        LateTrendPoint(
+            period_start=ps, period_end=pe, late_arrival_total=int(total or 0)
+        )
         for ps, pe, total in rows
     ]

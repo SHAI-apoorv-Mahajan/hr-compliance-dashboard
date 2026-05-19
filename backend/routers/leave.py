@@ -11,7 +11,6 @@ from models import AppUser, SilverEmployee, SilverLeaveTransaction
 from routers.deps import get_current_user
 from schemas.leave import LeaveSummaryRow, LeaveTransaction
 
-
 router = APIRouter(prefix="/api/v1/leave", tags=["leave"])
 
 
@@ -25,7 +24,10 @@ def leave_summary(
     emp_meta: dict[str, dict] = {}
     for e in db.query(SilverEmployee).all():
         if e.emp_code:
-            emp_meta[e.emp_code] = {"name": e.name, "wfh_credits": e.wfh_credits_monthly or 0}
+            emp_meta[e.emp_code] = {
+                "name": e.name,
+                "wfh_credits": e.wfh_credits_monthly or 0,
+            }
 
     by_emp: dict[str, dict[str, float]] = defaultdict(lambda: defaultdict(float))
     wfh: dict[str, float] = defaultdict(float)

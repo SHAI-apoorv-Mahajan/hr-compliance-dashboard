@@ -10,7 +10,6 @@ from models import AppUser, GoldPeriodStat, SilverDailyAttendance, SilverEmploye
 from routers.deps import get_current_user
 from schemas.attendance import AttendanceDay, AttendanceSummaryRow
 
-
 router = APIRouter(prefix="/api/v1/attendance", tags=["attendance"])
 
 
@@ -21,7 +20,9 @@ def list_summary(
     db: Session = Depends(get_db),
     _user: AppUser = Depends(get_current_user),
 ) -> list[AttendanceSummaryRow]:
-    name_lookup = {e.emp_code: e.name for e in db.query(SilverEmployee).all() if e.emp_code}
+    name_lookup = {
+        e.emp_code: e.name for e in db.query(SilverEmployee).all() if e.emp_code
+    }
     rows = (
         db.query(GoldPeriodStat)
         .filter(

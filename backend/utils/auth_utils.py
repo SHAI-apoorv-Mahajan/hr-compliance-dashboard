@@ -9,7 +9,6 @@ from passlib.context import CryptContext
 
 from config import get_settings
 
-
 _pwd_ctx = CryptContext(schemes=["bcrypt"], deprecated="auto")
 _JWT_ALG = "HS256"
 
@@ -28,7 +27,9 @@ def create_access_token(subject: str, extra: dict[str, Any] | None = None) -> st
     payload: dict[str, Any] = {
         "sub": subject,
         "iat": int(now.timestamp()),
-        "exp": int((now + timedelta(hours=settings.ACCESS_TOKEN_EXPIRE_HOURS)).timestamp()),
+        "exp": int(
+            (now + timedelta(hours=settings.ACCESS_TOKEN_EXPIRE_HOURS)).timestamp()
+        ),
     }
     if extra:
         payload.update(extra)

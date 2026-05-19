@@ -35,7 +35,6 @@ from routers import (
 )
 from seed import seed_defaults
 
-
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)sZ %(levelname)s %(name)s %(message)s",
@@ -73,11 +72,14 @@ app.add_middleware(
 
 # --- Error handlers — guarantee {"detail": "..."} shape (NFR-005) ----------
 
+
 @app.exception_handler(HTTPException)
 async def _http_exc(_req: Request, exc: HTTPException) -> JSONResponse:
     return JSONResponse(
         status_code=exc.status_code,
-        content={"detail": exc.detail if isinstance(exc.detail, str) else str(exc.detail)},
+        content={
+            "detail": exc.detail if isinstance(exc.detail, str) else str(exc.detail)
+        },
     )
 
 
@@ -87,7 +89,9 @@ async def _validation_exc(_req: Request, exc: RequestValidationError) -> JSONRes
     errors = exc.errors()
     if errors:
         first = errors[0]
-        loc = ".".join(str(p) for p in first.get("loc", []) if p not in ("body", "query", "path"))
+        loc = ".".join(
+            str(p) for p in first.get("loc", []) if p not in ("body", "query", "path")
+        )
         msg = first.get("msg", "Invalid input")
         detail = f"{loc}: {msg}" if loc else msg
     else:

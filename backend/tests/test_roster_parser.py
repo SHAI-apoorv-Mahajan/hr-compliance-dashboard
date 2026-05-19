@@ -7,7 +7,9 @@ from tests.fixtures import build_roster_xlsx
 
 
 def _make_upload(db):
-    u = BronzeUpload(file_type="roster", original_filename="r.xlsx", status="processing")
+    u = BronzeUpload(
+        file_type="roster", original_filename="r.xlsx", status="processing"
+    )
     db.add(u)
     db.flush()
     return u

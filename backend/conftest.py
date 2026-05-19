@@ -48,7 +48,9 @@ def engine():
 
 @pytest.fixture
 def db(engine):
-    Session = sessionmaker(bind=engine, autoflush=False, autocommit=False, expire_on_commit=False)
+    Session = sessionmaker(
+        bind=engine, autoflush=False, autocommit=False, expire_on_commit=False
+    )
     s = Session()
     try:
         yield s
@@ -73,7 +75,9 @@ def client(engine, monkeypatch):
     import database as db_mod
     from seed import seed_defaults
 
-    Session = sessionmaker(bind=engine, autoflush=False, autocommit=False, expire_on_commit=False)
+    Session = sessionmaker(
+        bind=engine, autoflush=False, autocommit=False, expire_on_commit=False
+    )
     monkeypatch.setattr(db_mod, "SessionLocal", Session)
     monkeypatch.setattr(db_mod, "engine", engine)
 

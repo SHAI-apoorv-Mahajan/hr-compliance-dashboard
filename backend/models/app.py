@@ -16,7 +16,9 @@ from models._types import JSONBType, UUIDType
 class AppUser(Base):
     __tablename__ = "app_users"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUIDType(), primary_key=True, default=uuid.uuid4)
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUIDType(), primary_key=True, default=uuid.uuid4
+    )
     email: Mapped[str] = mapped_column(String(150), unique=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     full_name: Mapped[Optional[str]] = mapped_column(String(100))
@@ -29,7 +31,9 @@ class AppUser(Base):
 class AppEmailTemplate(Base):
     __tablename__ = "app_email_templates"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUIDType(), primary_key=True, default=uuid.uuid4)
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUIDType(), primary_key=True, default=uuid.uuid4
+    )
     name: Mapped[str] = mapped_column(String(150), nullable=False)
     flag_type: Mapped[Optional[str]] = mapped_column(String(60))
     subject: Mapped[str] = mapped_column(String(255), nullable=False)
@@ -45,7 +49,9 @@ class AppEmailTemplate(Base):
 class AppFlagThreshold(Base):
     __tablename__ = "app_flag_thresholds"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUIDType(), primary_key=True, default=uuid.uuid4)
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUIDType(), primary_key=True, default=uuid.uuid4
+    )
     flag_type: Mapped[str] = mapped_column(String(60), unique=True, nullable=False)
     threshold_value: Mapped[Decimal] = mapped_column(Numeric(8, 2), nullable=False)
     threshold_unit: Mapped[Optional[str]] = mapped_column(String(20))
@@ -59,7 +65,9 @@ class AppFlagThreshold(Base):
 class AppEmailLog(Base):
     __tablename__ = "app_email_log"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUIDType(), primary_key=True, default=uuid.uuid4)
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUIDType(), primary_key=True, default=uuid.uuid4
+    )
     flag_id: Mapped[Optional[uuid.UUID]] = mapped_column(
         UUIDType(), ForeignKey("gold_employee_flags.id", ondelete="SET NULL")
     )

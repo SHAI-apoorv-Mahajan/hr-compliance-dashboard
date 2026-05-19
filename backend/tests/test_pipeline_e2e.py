@@ -18,12 +18,18 @@ from tests.fixtures import (
     date_to_excel_serial,
 )
 
-
 PERIOD_START = date(2026, 4, 1)
 PERIOD_END = date(2026, 4, 30)
 
 
-def _present(d, late_by="00:00", early_by="00:00", in_time="10:00", out_time="19:00", work="09:00"):
+def _present(
+    d,
+    late_by="00:00",
+    early_by="00:00",
+    in_time="10:00",
+    out_time="19:00",
+    work="09:00",
+):
     return {
         "att_date": d,
         "in_time": in_time,
@@ -108,12 +114,19 @@ def _upload_all(auth_client):
         [
             _roster_row("Alice Doe"),
             _roster_row("Bob Smith"),
-            _roster_row("Charlie WFH", working_model="Permanent WFH", schedule=("WFH",) * 5, wfh_credits=0),
+            _roster_row(
+                "Charlie WFH",
+                working_model="Permanent WFH",
+                schedule=("WFH",) * 5,
+                wfh_credits=0,
+            ),
             _roster_row("Dave Cloud"),
             _roster_row("Eve Late"),  # for LATE_ARRIVAL > 3
         ]
     )
-    r = auth_client.post("/api/v1/upload/roster", files={"file": ("r.xlsx", roster, "x")})
+    r = auth_client.post(
+        "/api/v1/upload/roster", files={"file": ("r.xlsx", roster, "x")}
+    )
     assert r.status_code == 201, r.text
 
     # Look up assigned emp_codes by re-querying via API.
@@ -124,7 +137,31 @@ def _upload_all(auth_client):
     # 2. Biometric — period 2026-04-01..30.
     # Working dates Mon..Fri: 1,2,3, 6,7,8,9,10, 13,14,15,16,17, 20,21,22,23,24, 27,28,29,30.
     weekdays = [
-        date(2026, 4, d) for d in (1, 2, 3, 6, 7, 8, 9, 10, 13, 14, 15, 16, 17, 20, 21, 22, 23, 24, 27, 28, 29, 30)
+        date(2026, 4, d)
+        for d in (
+            1,
+            2,
+            3,
+            6,
+            7,
+            8,
+            9,
+            10,
+            13,
+            14,
+            15,
+            16,
+            17,
+            20,
+            21,
+            22,
+            23,
+            24,
+            27,
+            28,
+            29,
+            30,
+        )
     ]
     weekends = [date(2026, 4, d) for d in (4, 5, 11, 12, 18, 19, 25, 26)]
 
@@ -262,17 +299,25 @@ def test_pipeline_full_run_and_flags(auth_client, db):
 
     # Charlie (permanent WFH): NO flags at all.
     charlie_flags = [f for f in flags if f["emp_code"] == "E003"]
-    assert charlie_flags == [], f"Permanent WFH employee should have no flags, got {charlie_flags}"
+    assert (
+        charlie_flags == []
+    ), f"Permanent WFH employee should have no flags, got {charlie_flags}"
 
     # Dave: WFH 6 vs credits 4 → WFH_QUOTA_EXCEEDED (excess = 2).
     assert ("E004", "WFH_QUOTA_EXCEEDED") in by_emp_and_type
-    dave_wfh = next(f for f in flags if f["emp_code"] == "E004" and f["flag_type"] == "WFH_QUOTA_EXCEEDED")
+    dave_wfh = next(
+        f
+        for f in flags
+        if f["emp_code"] == "E004" and f["flag_type"] == "WFH_QUOTA_EXCEEDED"
+    )
     assert dave_wfh["flag_value"] == 2.0
     assert dave_wfh["threshold_value"] == 4.0
 
     # Eve: 4 late → LATE_ARRIVAL (threshold 3).
     assert ("E005", "LATE_ARRIVAL") in by_emp_and_type
-    eve_late = next(f for f in flags if f["emp_code"] == "E005" and f["flag_type"] == "LATE_ARRIVAL")
+    eve_late = next(
+        f for f in flags if f["emp_code"] == "E005" and f["flag_type"] == "LATE_ARRIVAL"
+    )
     assert eve_late["flag_value"] == 4.0
 
     # Alice: only 2 late → no LATE_ARRIVAL flag (3 is not > 3).
@@ -355,6 +400,8 @@ def test_resolved_flag_not_resurrected(auth_client, db):
         json={"period_start": "2026-04-01", "period_end": "2026-04-30"},
     )
     db.expire_all()
-    bob_flag = db.query(GoldEmployeeFlag).filter(GoldEmployeeFlag.id == bob_flag.id).first()
+    bob_flag = (
+        db.query(GoldEmployeeFlag).filter(GoldEmployeeFlag.id == bob_flag.id).first()
+    )
     # Should remain inactive (HR resolved → no auto-resurrect).
     assert bob_flag.is_active is False
