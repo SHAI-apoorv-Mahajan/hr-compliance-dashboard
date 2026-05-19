@@ -38,7 +38,9 @@ export default function Login() {
       >
         <div>
           <div className="text-xl font-semibold">HR Compliance Dashboard</div>
-          <div className="text-sm text-slate-500">ShortHills Tech — internal tool</div>
+          <div className="text-sm text-slate-500">
+            ShortHills Tech — internal tool
+          </div>
         </div>
         <div>
           <label className="text-sm text-slate-700">Email</label>

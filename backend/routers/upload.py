@@ -11,10 +11,9 @@ from __future__ import annotations
 
 import logging
 from datetime import date
-from typing import Optional
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, File, Form, HTTPException, Response, UploadFile, status
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Response, UploadFile
 from sqlalchemy import and_, or_
 from sqlalchemy.orm import Session
 

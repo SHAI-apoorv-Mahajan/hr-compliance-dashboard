@@ -1,6 +1,5 @@
 """Dashboard analytics. FR-010 / US-013."""
 
-from collections import defaultdict
 from datetime import date
 
 from fastapi import APIRouter, Depends, Query

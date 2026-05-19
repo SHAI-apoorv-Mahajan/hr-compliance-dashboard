@@ -13,7 +13,6 @@ def test_config_status_unconfigured(auth_client):
 
 def test_send_returns_503_when_unconfigured(auth_client, db):
     # Need a flag + a template to even attempt send.
-    from uuid import uuid4
     from models import AppEmailTemplate, GoldEmployeeFlag
 
     template = db.query(AppEmailTemplate).first()

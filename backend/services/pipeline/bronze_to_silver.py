@@ -16,8 +16,7 @@ with the period's upload_ids (delete-then-insert).
 from __future__ import annotations
 
 import logging
-from datetime import date, datetime, time
-from typing import Iterable
+from datetime import date, time
 
 from sqlalchemy import and_
 from sqlalchemy.orm import Session

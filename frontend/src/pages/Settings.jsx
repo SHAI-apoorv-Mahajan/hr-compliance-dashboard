@@ -34,7 +34,10 @@ function Thresholds() {
   const [err, setErr] = useState("");
 
   function refresh() {
-    settingsApi.thresholds().then(setRows).catch((e) => setErr(detailFromError(e)));
+    settingsApi
+      .thresholds()
+      .then(setRows)
+      .catch((e) => setErr(detailFromError(e)));
   }
   useEffect(refresh, []);
 
@@ -128,7 +131,9 @@ function Templates() {
         <div className="flex justify-between items-center mb-2">
           <div className="text-sm font-medium">Templates</div>
           <button
-            onClick={() => setEditing({ name: "", flag_type: "", subject: "", body: "" })}
+            onClick={() =>
+              setEditing({ name: "", flag_type: "", subject: "", body: "" })
+            }
             className="text-xs bg-blue-600 text-white px-2 py-1 rounded"
           >
             + New
@@ -143,7 +148,9 @@ function Templates() {
             >
               <div>
                 <div className="font-medium">{t.name}</div>
-                <div className="text-xs text-slate-500">{t.flag_type || "—"}</div>
+                <div className="text-xs text-slate-500">
+                  {t.flag_type || "—"}
+                </div>
               </div>
               <div className="flex gap-2 text-xs">
                 <button onClick={() => setEditing(t)} className="text-blue-600">
@@ -158,7 +165,13 @@ function Templates() {
         </div>
       </div>
 
-      {editing && <TemplateEditor template={editing} onSave={save} onCancel={() => setEditing(null)} />}
+      {editing && (
+        <TemplateEditor
+          template={editing}
+          onSave={save}
+          onCancel={() => setEditing(null)}
+        />
+      )}
     </div>
   );
 }
@@ -181,7 +194,10 @@ function TemplateEditor({ template, onSave, onCancel }) {
     sender_name: "HR Team, ShortHills Tech",
   };
   function render(s) {
-    return s.replace(/\{\{\s*(\w+)\s*\}\}/g, (_, k) => sampleVars[k] || `{{${k}}}`);
+    return s.replace(
+      /\{\{\s*(\w+)\s*\}\}/g,
+      (_, k) => sampleVars[k] || `{{${k}}}`,
+    );
   }
 
   return (
@@ -211,19 +227,26 @@ function TemplateEditor({ template, onSave, onCancel }) {
         rows="10"
         className="w-full border rounded px-2 py-1 text-sm font-mono"
       />
-      <div className="text-xs text-slate-500 mt-1">Preview (with dummy values):</div>
+      <div className="text-xs text-slate-500 mt-1">
+        Preview (with dummy values):
+      </div>
       <div className="border border-slate-200 rounded p-2 text-xs">
         <div className="font-semibold">{render(subject)}</div>
         <pre className="whitespace-pre-wrap mt-1">{render(body)}</pre>
       </div>
       <div className="flex gap-2">
         <button
-          onClick={() => onSave({ name, flag_type: flagType || null, subject, body })}
+          onClick={() =>
+            onSave({ name, flag_type: flagType || null, subject, body })
+          }
           className="bg-blue-600 text-white px-3 py-1 rounded text-sm"
         >
           Save
         </button>
-        <button onClick={onCancel} className="bg-slate-200 px-3 py-1 rounded text-sm">
+        <button
+          onClick={onCancel}
+          className="bg-slate-200 px-3 py-1 rounded text-sm"
+        >
           Cancel
         </button>
       </div>
@@ -234,15 +257,18 @@ function TemplateEditor({ template, onSave, onCancel }) {
 function SystemConfig() {
   const [config, setConfig] = useState(null);
   useEffect(() => {
-    emailApi.configStatus().then(setConfig).catch(() => {});
+    emailApi
+      .configStatus()
+      .then(setConfig)
+      .catch(() => {});
   }, []);
   const missing = config?.missing || [];
   const all = ["GRAPH_TENANT_ID", "GRAPH_CLIENT_ID", "GRAPH_CLIENT_SECRET"];
   return (
     <div className="bg-white rounded shadow-sm p-4">
       <div className="text-sm text-slate-600 mb-3">
-        Microsoft Graph credentials are read from environment variables. Set them in your{" "}
-        <code>.env</code> file and restart the backend.
+        Microsoft Graph credentials are read from environment variables. Set
+        them in your <code>.env</code> file and restart the backend.
       </div>
       <table className="w-full text-sm">
         <tbody>

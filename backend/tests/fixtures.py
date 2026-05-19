@@ -4,11 +4,7 @@ from __future__ import annotations
 
 import io
 from datetime import date, datetime
-from typing import Iterable
-
-import openpyxl
 from openpyxl import Workbook
-from openpyxl.utils import get_column_letter
 
 
 # ---- GreytHR ---------------------------------------------------------------

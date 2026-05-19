@@ -27,7 +27,8 @@ export default function Upload() {
   async function handleUpload(kind, file) {
     setErr("");
     try {
-      if (kind === "greythr") await uploadApi.greythr(file, period.start, period.end);
+      if (kind === "greythr")
+        await uploadApi.greythr(file, period.start, period.end);
       else if (kind === "biometric")
         await uploadApi.biometric(file, period.start, period.end);
       else if (kind === "roster") await uploadApi.roster(file);
@@ -53,7 +54,12 @@ export default function Upload() {
   }
 
   async function handleDelete(id) {
-    if (!confirm("Delete this upload? Bronze rows will be removed; silver/gold rebuilt on next run.")) return;
+    if (
+      !confirm(
+        "Delete this upload? Bronze rows will be removed; silver/gold rebuilt on next run.",
+      )
+    )
+      return;
     setErr("");
     try {
       await uploadApi.delete(id);
@@ -69,10 +75,18 @@ export default function Upload() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-semibold">Upload</h1>
-        <PeriodPicker start={period.start} end={period.end} onChange={setPeriod} />
+        <PeriodPicker
+          start={period.start}
+          end={period.end}
+          onChange={setPeriod}
+        />
       </div>
 
-      {err && <div className="bg-red-50 text-red-700 text-sm p-3 rounded border border-red-200">{err}</div>}
+      {err && (
+        <div className="bg-red-50 text-red-700 text-sm p-3 rounded border border-red-200">
+          {err}
+        </div>
+      )}
 
       <div className="grid grid-cols-3 gap-4">
         <UploadCard
@@ -92,7 +106,9 @@ export default function Upload() {
         <UploadCard
           title="Team Roster"
           subtitle="Team timings & roster (.xlsx) — no period"
-          uploaded={history.some((h) => h.file_type === "roster" && h.status === "processed")}
+          uploaded={history.some(
+            (h) => h.file_type === "roster" && h.status === "processed",
+          )}
           onUpload={(f) => handleUpload("roster", f)}
         />
       </div>
@@ -121,7 +137,9 @@ export default function Upload() {
       </div>
 
       <div className="bg-white rounded shadow-sm p-4">
-        <div className="text-sm font-medium text-slate-700 mb-3">Upload History</div>
+        <div className="text-sm font-medium text-slate-700 mb-3">
+          Upload History
+        </div>
         <table className="w-full text-sm">
           <thead className="text-left text-slate-500 text-xs uppercase">
             <tr>
@@ -147,7 +165,9 @@ export default function Upload() {
                 <td className="py-2">{row.file_type}</td>
                 <td className="truncate max-w-xs">{row.original_filename}</td>
                 <td>
-                  {row.period_start ? `${row.period_start} → ${row.period_end}` : "—"}
+                  {row.period_start
+                    ? `${row.period_start} → ${row.period_end}`
+                    : "—"}
                 </td>
                 <td>{row.row_count ?? "—"}</td>
                 <td>
@@ -156,8 +176,8 @@ export default function Upload() {
                       row.status === "processed"
                         ? "text-green-600"
                         : row.status === "failed"
-                        ? "text-red-600"
-                        : "text-slate-500"
+                          ? "text-red-600"
+                          : "text-slate-500"
                     }
                   >
                     {row.status}
@@ -213,7 +233,9 @@ function UploadCard({ title, subtitle, requiresPeriod, uploaded, onUpload }) {
         </div>
         <span
           className={`text-xs px-2 py-0.5 rounded ${
-            uploaded ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-500"
+            uploaded
+              ? "bg-green-100 text-green-700"
+              : "bg-slate-100 text-slate-500"
           }`}
         >
           {uploaded ? "Uploaded ✓" : "Not yet"}

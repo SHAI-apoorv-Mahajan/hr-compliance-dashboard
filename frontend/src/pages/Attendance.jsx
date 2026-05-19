@@ -20,13 +20,20 @@ export default function Attendance() {
   const [selectedDay, setSelectedDay] = useState(null);
 
   useEffect(() => {
-    attendanceApi.summary(period.start, period.end).then(setSummary).catch(() => {});
+    attendanceApi
+      .summary(period.start, period.end)
+      .then(setSummary)
+      .catch(() => {});
   }, [period.start, period.end]);
 
   async function openEmployee(emp) {
     setOpenEmp(emp);
     setSelectedDay(null);
-    const data = await attendanceApi.forEmployee(emp.emp_code, period.start, period.end);
+    const data = await attendanceApi.forEmployee(
+      emp.emp_code,
+      period.start,
+      period.end,
+    );
     setDays(data);
   }
 
@@ -34,7 +41,11 @@ export default function Attendance() {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-semibold">Attendance</h1>
-        <PeriodPicker start={period.start} end={period.end} onChange={setPeriod} />
+        <PeriodPicker
+          start={period.start}
+          end={period.end}
+          onChange={setPeriod}
+        />
       </div>
 
       <div className="bg-white rounded shadow-sm overflow-x-auto">
@@ -84,7 +95,9 @@ export default function Attendance() {
       {openEmp && (
         <div className="bg-white rounded shadow-sm p-4">
           <div className="flex justify-between items-center mb-3">
-            <div className="font-medium">{openEmp.name || openEmp.emp_code} — Calendar</div>
+            <div className="font-medium">
+              {openEmp.name || openEmp.emp_code} — Calendar
+            </div>
             <button
               onClick={() => setOpenEmp(null)}
               className="text-xs text-slate-500 hover:text-slate-700"
@@ -111,9 +124,13 @@ export default function Attendance() {
                 <div>InTime: {selectedDay.in_time || "—"}</div>
                 <div>OutTime: {selectedDay.out_time || "—"}</div>
                 <div>LateBy: {selectedDay.late_by_minutes || 0}m</div>
-                <div>EarlyGoing: {selectedDay.early_going_by_minutes || 0}m</div>
+                <div>
+                  EarlyGoing: {selectedDay.early_going_by_minutes || 0}m
+                </div>
               </div>
-              <div className="text-xs text-slate-500 mt-1">Status: {selectedDay.status}</div>
+              <div className="text-xs text-slate-500 mt-1">
+                Status: {selectedDay.status}
+              </div>
             </div>
           )}
         </div>

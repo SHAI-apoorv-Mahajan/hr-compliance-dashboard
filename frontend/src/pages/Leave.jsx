@@ -7,12 +7,17 @@ export default function Leave() {
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
-    leaveApi.summary(period.start, period.end).then(setRows).catch(() => {});
+    leaveApi
+      .summary(period.start, period.end)
+      .then(setRows)
+      .catch(() => {});
   }, [period.start, period.end]);
 
   const allLeaveTypes = useMemo(() => {
     const set = new Set();
-    rows.forEach((r) => Object.keys(r.by_type || {}).forEach((k) => set.add(k)));
+    rows.forEach((r) =>
+      Object.keys(r.by_type || {}).forEach((k) => set.add(k)),
+    );
     return Array.from(set).sort();
   }, [rows]);
 
@@ -20,7 +25,11 @@ export default function Leave() {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-semibold">Leave Analysis</h1>
-        <PeriodPicker start={period.start} end={period.end} onChange={setPeriod} />
+        <PeriodPicker
+          start={period.start}
+          end={period.end}
+          onChange={setPeriod}
+        />
       </div>
 
       <div className="bg-white rounded shadow-sm overflow-x-auto">
@@ -52,7 +61,9 @@ export default function Leave() {
                 ))}
                 <td>{r.wfh_availed}</td>
                 <td>{r.wfh_credits}</td>
-                <td className={r.wfh_excess > 0 ? "text-red-600 font-medium" : ""}>
+                <td
+                  className={r.wfh_excess > 0 ? "text-red-600 font-medium" : ""}
+                >
                   {r.wfh_excess}
                 </td>
               </tr>

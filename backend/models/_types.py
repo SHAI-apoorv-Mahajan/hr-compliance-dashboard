@@ -9,11 +9,9 @@ the test suite materialize tables on SQLite.
 
 from __future__ import annotations
 
-import json
 import uuid
-from typing import Any
 
-from sqlalchemy import CHAR, JSON, String, TypeDecorator
+from sqlalchemy import CHAR, JSON, TypeDecorator
 from sqlalchemy.dialects.postgresql import JSONB as PG_JSONB
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 

@@ -39,7 +39,9 @@ export default function Employees() {
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-semibold">Employees</h1>
-      {err && <div className="bg-red-50 text-red-700 text-sm p-3 rounded">{err}</div>}
+      {err && (
+        <div className="bg-red-50 text-red-700 text-sm p-3 rounded">{err}</div>
+      )}
       <div className="bg-white rounded shadow-sm overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="text-left text-slate-500 text-xs uppercase">
@@ -70,7 +72,9 @@ export default function Employees() {
                 className="border-t border-slate-100 hover:bg-slate-50 cursor-pointer"
                 onClick={() => setSelected(r)}
               >
-                <td className="px-3 py-2 font-mono text-xs">{r.emp_code || "—"}</td>
+                <td className="px-3 py-2 font-mono text-xs">
+                  {r.emp_code || "—"}
+                </td>
                 <td>{r.name}</td>
                 <td onClick={(e) => e.stopPropagation()}>
                   <input
@@ -78,7 +82,10 @@ export default function Employees() {
                     defaultValue={r.email || ""}
                     onBlur={(e) => {
                       if (e.target.value !== (r.email || "")) {
-                        setEditing((s) => ({ ...s, [r.emp_code]: e.target.value }));
+                        setEditing((s) => ({
+                          ...s,
+                          [r.emp_code]: e.target.value,
+                        }));
                         saveEmail(r.emp_code);
                       }
                     }}
@@ -120,9 +127,14 @@ export default function Employees() {
             <div className="flex justify-between items-start">
               <div>
                 <div className="font-semibold">{selected.name}</div>
-                <div className="text-xs text-slate-500">{selected.emp_code}</div>
+                <div className="text-xs text-slate-500">
+                  {selected.emp_code}
+                </div>
               </div>
-              <button onClick={() => setSelected(null)} className="text-slate-400">
+              <button
+                onClick={() => setSelected(null)}
+                className="text-slate-400"
+              >
                 ×
               </button>
             </div>
@@ -133,7 +145,10 @@ export default function Employees() {
               <Field label="Role" v={selected.in_team_role} />
               <Field label="Billing" v={selected.billing_status} />
               <Field label="Working Model" v={selected.working_model} />
-              <Field label="Permanent WFH" v={selected.is_permanent_wfh ? "Yes" : "No"} />
+              <Field
+                label="Permanent WFH"
+                v={selected.is_permanent_wfh ? "Yes" : "No"}
+              />
               <Field label="WFH Credits" v={selected.wfh_credits_monthly} />
               <Field label="InTime Deadline" v={selected.intime_deadline} />
               <div className="mt-3">

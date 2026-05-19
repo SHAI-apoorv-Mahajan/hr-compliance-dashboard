@@ -35,7 +35,9 @@ export default function Layout() {
               to={item.to}
               className={({ isActive }) =>
                 `block px-4 py-2 text-sm hover:bg-slate-800 ${
-                  isActive ? "bg-slate-800 text-white border-l-2 border-blue-500" : ""
+                  isActive
+                    ? "bg-slate-800 text-white border-l-2 border-blue-500"
+                    : ""
                 }`
               }
             >
@@ -45,7 +47,10 @@ export default function Layout() {
         </nav>
         <div className="px-4 py-3 border-t border-slate-700 text-xs">
           <div className="truncate">{user?.email}</div>
-          <button onClick={handleSignOut} className="mt-2 text-slate-400 hover:text-white">
+          <button
+            onClick={handleSignOut}
+            className="mt-2 text-slate-400 hover:text-white"
+          >
             Sign out
           </button>
         </div>

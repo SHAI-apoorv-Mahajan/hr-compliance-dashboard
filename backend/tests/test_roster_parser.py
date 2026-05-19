@@ -1,9 +1,7 @@
 """US-007 / FR-004 — Roster parser + silver_employees upsert."""
 
 from datetime import time
-from uuid import uuid4
-
-from models import BronzeRosterRaw, BronzeUpload, SilverEmployee
+from models import BronzeUpload, SilverEmployee
 from services.parsers.roster_parser import parse_roster_and_upsert_employees
 from tests.fixtures import build_roster_xlsx
 

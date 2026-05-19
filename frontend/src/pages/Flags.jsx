@@ -67,10 +67,16 @@ export default function Flags() {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-semibold">Flags</h1>
-        <PeriodPicker start={period.start} end={period.end} onChange={setPeriod} />
+        <PeriodPicker
+          start={period.start}
+          end={period.end}
+          onChange={setPeriod}
+        />
       </div>
 
-      {err && <div className="bg-red-50 text-red-700 text-sm p-3 rounded">{err}</div>}
+      {err && (
+        <div className="bg-red-50 text-red-700 text-sm p-3 rounded">{err}</div>
+      )}
 
       <div className="bg-white rounded shadow-sm p-3 flex gap-3 items-center">
         <select

@@ -56,11 +56,18 @@ export default function Dashboard() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-semibold">Dashboard</h1>
-        <PeriodPicker start={period.start} end={period.end} onChange={setPeriod} />
+        <PeriodPicker
+          start={period.start}
+          end={period.end}
+          onChange={setPeriod}
+        />
       </div>
 
       <div className="grid grid-cols-5 gap-4">
-        <Card label="Total Employees" value={overview?.total_employees ?? "—"} />
+        <Card
+          label="Total Employees"
+          value={overview?.total_employees ?? "—"}
+        />
         <Card
           label="Flagged This Period"
           value={overview?.flagged_employees ?? "—"}
@@ -74,7 +81,10 @@ export default function Dashboard() {
           label="WFH Compliance"
           value={overview ? `${overview.wfh_compliance_pct}%` : "—"}
         />
-        <Card label="Emails Sent" value={overview?.emails_sent_this_period ?? "—"} />
+        <Card
+          label="Emails Sent"
+          value={overview?.emails_sent_this_period ?? "—"}
+        />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
@@ -99,7 +109,12 @@ export default function Dashboard() {
           ) : (
             <ResponsiveContainer width="100%" height={280}>
               <PieChart>
-                <Pie data={flags} dataKey="count" nameKey="flag_type" outerRadius={100}>
+                <Pie
+                  data={flags}
+                  dataKey="count"
+                  nameKey="flag_type"
+                  outerRadius={100}
+                >
                   {flags.map((_, i) => (
                     <Cell key={i} fill={COLORS[i % COLORS.length]} />
                   ))}
@@ -122,7 +137,11 @@ export default function Dashboard() {
               <XAxis dataKey="period_start" />
               <YAxis />
               <Tooltip />
-              <Line type="monotone" dataKey="late_arrival_total" stroke="#dc2626" />
+              <Line
+                type="monotone"
+                dataKey="late_arrival_total"
+                stroke="#dc2626"
+              />
             </LineChart>
           </ResponsiveContainer>
         )}
@@ -135,7 +154,9 @@ function Card({ label, value, tone }) {
   return (
     <div className="bg-white rounded shadow-sm p-4">
       <div className="text-xs text-slate-500">{label}</div>
-      <div className={`text-2xl font-semibold mt-1 ${tone === "red" ? "text-red-600" : ""}`}>
+      <div
+        className={`text-2xl font-semibold mt-1 ${tone === "red" ? "text-red-600" : ""}`}
+      >
         {value}
       </div>
     </div>

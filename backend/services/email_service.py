@@ -16,7 +16,7 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from config import get_settings
-from models import AppEmailLog, AppEmailTemplate, AppUser, GoldEmployeeFlag, SilverEmployee
+from models import AppEmailLog, AppEmailTemplate, GoldEmployeeFlag, SilverEmployee
 
 
 log = logging.getLogger(__name__)

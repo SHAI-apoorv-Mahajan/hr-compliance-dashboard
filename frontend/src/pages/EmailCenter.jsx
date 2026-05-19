@@ -8,7 +8,10 @@ export default function EmailCenter() {
   const [config, setConfig] = useState({ configured: false, missing: [] });
 
   useEffect(() => {
-    emailApi.configStatus().then(setConfig).catch(() => {});
+    emailApi
+      .configStatus()
+      .then(setConfig)
+      .catch(() => {});
   }, []);
 
   return (
@@ -33,12 +36,16 @@ export default function EmailCenter() {
 
       {!config.configured && (
         <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 text-sm p-3 rounded">
-          Email service is not yet configured. Contact the system administrator. (Missing:{" "}
-          {config.missing.join(", ")})
+          Email service is not yet configured. Contact the system administrator.
+          (Missing: {config.missing.join(", ")})
         </div>
       )}
 
-      {tab === "send" ? <SendTab configured={config.configured} /> : <HistoryTab />}
+      {tab === "send" ? (
+        <SendTab configured={config.configured} />
+      ) : (
+        <HistoryTab />
+      )}
     </div>
   );
 }
@@ -55,14 +62,22 @@ function SendTab({ configured }) {
   const [results, setResults] = useState([]);
 
   useEffect(() => {
-    emailApi.templates().then(setTemplates).catch(() => {});
-    flagsApi.list({}).then(setFlags).catch(() => {});
+    emailApi
+      .templates()
+      .then(setTemplates)
+      .catch(() => {});
+    flagsApi
+      .list({})
+      .then(setFlags)
+      .catch(() => {});
     const pre = params.get("flag_ids");
     if (pre) setFlagIds(pre.split(","));
   }, []);
 
   function toggleFlag(id) {
-    setFlagIds((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
+    setFlagIds((s) =>
+      s.includes(id) ? s.filter((x) => x !== id) : [...s, id],
+    );
   }
 
   async function doPreview() {
@@ -134,7 +149,9 @@ function SendTab({ configured }) {
             Preview
           </button>
           <button
-            disabled={!templateId || flagIds.length === 0 || !configured || sending}
+            disabled={
+              !templateId || flagIds.length === 0 || !configured || sending
+            }
             onClick={doSend}
             className="px-3 py-1 rounded bg-blue-600 text-white text-sm disabled:opacity-40"
           >
@@ -148,10 +165,17 @@ function SendTab({ configured }) {
         <div className="text-sm font-medium mb-2">3. Preview / Result</div>
         <div className="space-y-3 max-h-96 overflow-y-auto text-xs">
           {preview.map((p) => (
-            <div key={p.flag_id} className="border border-slate-200 rounded p-2">
+            <div
+              key={p.flag_id}
+              className="border border-slate-200 rounded p-2"
+            >
               <div className="font-semibold">{p.subject}</div>
-              <div className="text-slate-500">To: {p.recipient_email || "(no email)"}</div>
-              <pre className="whitespace-pre-wrap mt-1 text-slate-700">{p.body}</pre>
+              <div className="text-slate-500">
+                To: {p.recipient_email || "(no email)"}
+              </div>
+              <pre className="whitespace-pre-wrap mt-1 text-slate-700">
+                {p.body}
+              </pre>
             </div>
           ))}
           {results.map((r) => (
@@ -164,7 +188,9 @@ function SendTab({ configured }) {
               <div>
                 {r.recipient_email}: {r.status}
               </div>
-              {r.error_message && <div className="text-red-600">{r.error_message}</div>}
+              {r.error_message && (
+                <div className="text-red-600">{r.error_message}</div>
+              )}
             </div>
           ))}
         </div>
@@ -176,7 +202,10 @@ function SendTab({ configured }) {
 function HistoryTab() {
   const [logs, setLogs] = useState([]);
   useEffect(() => {
-    emailApi.logs({}).then(setLogs).catch(() => {});
+    emailApi
+      .logs({})
+      .then(setLogs)
+      .catch(() => {});
   }, []);
   return (
     <div className="bg-white rounded shadow-sm overflow-x-auto">
@@ -207,8 +236,8 @@ function HistoryTab() {
                   l.status === "sent"
                     ? "text-green-600"
                     : l.status === "failed"
-                    ? "text-red-600"
-                    : "text-yellow-600"
+                      ? "text-red-600"
+                      : "text-yellow-600"
                 }
               >
                 {l.status}
