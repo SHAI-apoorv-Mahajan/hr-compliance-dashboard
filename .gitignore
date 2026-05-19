@@ -1,0 +1,39 @@
+# Env / secrets
+.env
+.env.local
+.env.*.local
+secrets/
+**/credentials.json
+**/credentials.*.json
+
+# Local Claude state
+CLAUDE.local.md
+.claude/settings.local.json
+.claude/agent-memory-local/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.venv/
+venv/
+dist/
+build/
+*.egg-info/
+
+# Node
+node_modules/
+frontend/dist/
+npm-debug.log*
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Runtime
+uploads/
+*.log

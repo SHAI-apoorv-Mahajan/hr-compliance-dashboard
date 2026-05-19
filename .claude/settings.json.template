@@ -1,0 +1,55 @@
+{
+  "effortLevel": "xhigh",
+  "autoMemoryEnabled": true,
+  "includeGitInstructions": true,
+  "cleanupPeriodDays": 30,
+  "permissions": {
+    "defaultMode": "acceptEdits",
+    "allow": [
+      "Bash(python *)",
+      "Bash(uvicorn *)",
+      "Bash(pip *)",
+      "Bash(pytest *)",
+      "Bash(docker *)",
+      "Bash(docker compose *)",
+      "Bash(docker-compose *)",
+      "Bash(npm run *)",
+      "Bash(npm ci)",
+      "Bash(npx vite *)",
+      "Bash(git *)",
+      "Bash(gh *)",
+      "Read(./**)",
+      "Edit(./src/**)",
+      "Edit(./tests/**)",
+      "Edit(./docs/**)",
+      "Edit(./.claude/**)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./secrets/**)",
+      "Read(./**/credentials.json)",
+      "Bash(curl * | sh)",
+      "Bash(rm -rf /*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [{ "type": "command", "command": ".claude/hooks/block-secret-writes.sh" }]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [{ "type": "command", "command": ".claude/hooks/format-on-edit.sh" }]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [{ "type": "command", "command": ".claude/hooks/run-tests-on-stop.sh" }]
+      }
+    ]
+  }
+}
